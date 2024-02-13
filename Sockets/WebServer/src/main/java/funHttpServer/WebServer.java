@@ -269,22 +269,37 @@ class WebServer {
                     System.out.println(_comment_body);
                     String _author_name = query_pairs.get("author");
                     System.out.println(_author_name);
-                    String file = "comments.txt";
+                    String file = "../../../../../comments.txt";
                     //error handling is done via exceptions below
                     BufferedWriter out = new BufferedWriter(new FileWriter(file));
-                    out.write("Comment: " + _comment_body + "\n" + "By: " + _author_name + "\n");
+                    out.write("COMMENT: " + _comment_body + "\n" + "BY: " + _author_name + "\n");
                     out.close();
                     builder.append("HTTP/1.1 200 OK\n");
                     builder.append("Content-Type: text/html; charset=utf-8\n");
                     builder.append("\n");
                     builder.append("Comment added!");
               }
+              else if (request.contains("printpw?")) {
+                  //TODO: Implement printing powers here
+                  //gahh! ran out of time. My session A courses eat up so much. Can't wait
+                  //for those to be over Feb. 27th.
+                  //No idea what I was thinking taking three session A's but I really regret it.
+              }
+              //this is for internal use when HTML creates the iframe. Unlikely a user can see it.
+              else if (request.contains("comments.txt")) {
+                  File file = new File("www/comments.txt");
+                  // Generate response
+                  builder.append("HTTP/1.1 200 OK\n");
+                  builder.append("Content-Type: text/html; charset=utf-8\n");
+                  builder.append("\n");
+                  builder.append(new String(readFileInBytes(file)));
+              }
               else {
                   // if the request is not recognized at all
                   builder.append("HTTP/1.1 400 Bad Request\n");
                   builder.append("Content-Type: text/html; charset=utf-8\n");
                   builder.append("\n");
-                  builder.append("I am not sure what you want me to do...");
+                  builder.append("Unrecognized request.");
               }
 
               // Output

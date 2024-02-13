@@ -18,14 +18,14 @@
 			</ul>
 			<li>/comment -- use to add comments to the list below!</li>
 			<ul>
-				<li>for example: /comment?comment?text=despite all my rage i am just a rat in a cage&author=trenton mosher</li>
+				<li>for example: "/comment?text=despite all my rage i am just a rat in a cage&author=trenton mosher"</li>
 			</ul>
 		</ul>
 		<h3>File Structure in www (you can use /file/www/FILENAME):</h3>
 		${links}
 		<h3>Here are some comments from other users!</h3>
-		<object type="text/plain" data="../comments.txt" width="300" height="600">
-			<p>Cannot load text file, browser does not support file loading. Please use a different browser to see this content.</p>
-		</object>
+		<iframe src="comments.txt" width="400" height="300" >
+			<p>Error displaying text comments!</p>
+		</iframe>
 	</body>
 </html>
