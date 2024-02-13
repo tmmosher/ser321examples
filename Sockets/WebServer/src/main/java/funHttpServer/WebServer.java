@@ -10,11 +10,13 @@ You can also do some other simple GET requests:
    JSON which will for now only be printed in the console. See the todo below
 
 The reading of the request is done "manually", meaning no library that helps making things a 
-little easier is used. This is done so you see exactly how to pars the request and 
+little easier is used. This is done so you see exactly how to parse the request and
 write a response back
 */
 
 package funHttpServer;
+
+import org.json.*;
 
 import java.io.*;
 import java.net.*;
@@ -130,7 +132,7 @@ class WebServer {
         StringBuilder builder = new StringBuilder();
         // NOTE: output from buffer is at the end
 
-        if (request.length() == 0) {
+        if (request.isEmpty()) {
           // shows the default directory page
 
           // opens the root.html file
@@ -202,21 +204,31 @@ class WebServer {
           query_pairs = splitQuery(request.replace("multiply?", ""));
 
           // extract required fields from parameters
+          //NumberFormatException catching is down below
           Integer num1 = Integer.parseInt(query_pairs.get("num1"));
           Integer num2 = Integer.parseInt(query_pairs.get("num2"));
+          //ensuring numbers are in range
+          if (num1 > (Integer.MAX_VALUE / num2) || num1 < (Integer.MIN_VALUE / num2)) {
+            //Reply with a "bad request" response as the request is malformed
+            //
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("Operand or result is outside of maximum or minimum integer range. Please retry.");
+          }
+          else {
+            // do math
+            Integer result = num1 * num2;
 
-          // do math
-          Integer result = num1 * num2;
+            // Generate response
+            builder.append("HTTP/1.1 200 OK\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("Result is: " + result);
 
-          // Generate response
-          builder.append("HTTP/1.1 200 OK\n");
-          builder.append("Content-Type: text/html; charset=utf-8\n");
-          builder.append("\n");
-          builder.append("Result is: " + result);
-
-          // TODO: Include error handling here with a correct error code and
-          // a response that makes sense
-
+            // TODO: Include error handling here with a correct error code and
+            // a response that makes sense
+          }
         } else if (request.contains("github?")) {
           // pulls the query from the request and runs it with GitHub's REST API
           // check out https://docs.github.com/rest/reference/
@@ -229,12 +241,18 @@ class WebServer {
           Map<String, String> query_pairs = new LinkedHashMap<String, String>();
           query_pairs = splitQuery(request.replace("github?", ""));
           String json = fetchURL("https://api.github.com/" + query_pairs.get("query"));
-          System.out.println(json);
-
+          //System.out.println(json);
+          //create a JSON array of objects returned
+          JSONArray resultArray = new JSONArray(json);
+          String outputVal = "";
           builder.append("HTTP/1.1 200 OK\n");
           builder.append("Content-Type: text/html; charset=utf-8\n");
           builder.append("\n");
-          builder.append("Check the todos mentioned in the Java source file");
+          for (int i = 0; i < resultArray.length(); i++) {
+            outputVal = resultArray.getJSONObject(i).getString("full_name");
+            System.out.println("Data: " + outputVal);
+          }
+          builder.append(outputVal);
           // TODO: Parse the JSON returned by your fetch and create an appropriate
           // response based on what the assignment document asks for
 
@@ -254,7 +272,16 @@ class WebServer {
       e.printStackTrace();
       response = ("<html>ERROR: " + e.getMessage() + "</html>").getBytes();
     }
-
+    catch (NumberFormatException e){
+      response = ("<html>ERROR: " + e.getMessage() + "</html>").getBytes();
+    }
+    catch (NullPointerException e) {
+      //if concatenating the
+      response = ("<html>ERROR: " + e.getMessage() + "</html>").getBytes();
+    }
+    catch (JSONException e) {
+      System.out.println("Repo selected for user does not have valid login information.");
+    }
     return response;
   }
 
