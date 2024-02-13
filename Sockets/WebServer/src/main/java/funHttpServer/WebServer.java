@@ -262,25 +262,22 @@ class WebServer {
 
               }
               else if (request.contains("comment?")) {
-              //TODO: Implement comments here
                   Map<String, String> query_pairs = new LinkedHashMap<String, String>();
-                    query_pairs = splitQuery(request.replace("comment?", ""));
-                    String _comment_body = query_pairs.get("text");
-                    if (_comment_body == null) throw new IOException();
-                    System.out.println(_comment_body);
-                    String _author_name = query_pairs.get("author");
-                    if (_author_name == null) throw new IOException();
-                    System.out.println(_author_name);
-                    String file = "www/comments.txt";
-                    //error handling is done via exceptions below
-                    BufferedWriter out = new BufferedWriter(new FileWriter(file, true));
+                  query_pairs = splitQuery(request.replace("comment?", ""));
+                  String _comment_body = query_pairs.get("text");
+                  if (_comment_body == null) throw new IOException();
+                  String _author_name = query_pairs.get("author");
+                  if (_author_name == null) throw new IOException();
+                  String file = "www/comments.txt";
+                  //error handling is done via exceptions below
+                  BufferedWriter out = new BufferedWriter(new FileWriter(file, true));
 
-                    out.write("[COMMENT: " + _comment_body + "\nBY: " + _author_name + "]\n");
-                    out.close();
-                    builder.append("HTTP/1.1 200 OK\n");
-                    builder.append("Content-Type: text/html; charset=utf-8\n");
-                    builder.append("\n");
-                    builder.append("Comment added!");
+                  out.write("[COMMENT: " + _comment_body + "\nBY: " + _author_name + "]\n");
+                  out.close();
+                  builder.append("HTTP/1.1 200 OK\n");
+                  builder.append("Content-Type: text/html; charset=utf-8\n");
+                  builder.append("\n");
+                  builder.append("Comment added!");
               }
               else if (request.contains("printpw?")) {
                   //TODO: Implement printing powers here
@@ -321,7 +318,7 @@ class WebServer {
           builder.append("\n");
           builder.append("Invalid request to GitHub REST API.");
           response = builder.toString().getBytes();
-      } catch (IOException e) {
+      } catch (IOException | IllegalArgumentException e) {
           builder.append("HTTP/1.1 400 Bad Request\n");
           builder.append("Content-Type: text/html; charset=utf-8\n");
           builder.append("\n");
