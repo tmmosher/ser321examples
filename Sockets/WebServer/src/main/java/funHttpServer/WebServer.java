@@ -310,7 +310,11 @@ class WebServer {
           }
       } catch (NumberFormatException e) {
           //Someone tried to do something silly with the number format
-          response = ("<html>ERROR: " + e.getMessage() + "</html>").getBytes();
+          builder.append("HTTP/1.1 400 Bad Request\n");
+          builder.append("Content-Type: text/html; charset=utf-8\n");
+          builder.append("\n");
+          builder.append("Invalid number format. Please use integer numbers.");
+          response = builder.toString().getBytes();
       } catch (JSONException | NullPointerException | StringIndexOutOfBoundsException e) {
           builder.append("HTTP/1.1 400 Bad Request\n");
           builder.append("Content-Type: text/html; charset=utf-8\n");
