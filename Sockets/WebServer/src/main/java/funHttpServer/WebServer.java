@@ -198,9 +198,6 @@ class WebServer {
                   }
               }
               else if (request.contains("multiply?")) {
-                  // This multiplies two numbers, there is NO error handling, so when
-                  // wrong data is given this just crashes
-
                   Map<String, String> query_pairs = new LinkedHashMap<String, String>();
                   // extract path parameters
                   query_pairs = splitQuery(request.replace("multiply?", ""));
@@ -283,11 +280,29 @@ class WebServer {
               }
               else if (request.contains("printpw?")) {
                   //TODO: Implement printing powers here
-                  //gahh! ran out of time. My session A courses eat up so much. Can't wait
-                  //for those to be over Feb. 27th.
-                  //No idea what I was thinking taking three session A's but I really regret it.
+                  Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+                  query_pairs = splitQuery(request.replace("printpw?", ""));
+                  Integer num1 = Integer.parseInt(query_pairs.get("num1"));
+                  Integer num2 = Integer.parseInt(query_pairs.get("num2"));
+                  if (num1 > Math.pow(Integer.MAX_VALUE, (double) 1 / num2) || num1 < Math.pow(Integer.MIN_VALUE, (double) 1/num2)) {
+                      //Reply with a "bad request" response as the request is out of bounds
+                      builder.append("HTTP/1.1 400 Bad Request\n");
+                      builder.append("Content-Type: text/html; charset=utf-8\n");
+                      builder.append("\n");
+                      builder.append("Operand or result is outside of maximum or minimum integer range. Please retry.");
+                  }
+                  else {
+                      String output = "";
+                   for (int i = 0; i < num2; i++) {
+                       output = output + ((int) Math.pow(num1, i)) + " ";
+                   }
+                      builder.append("HTTP/1.1 200 OK\n");
+                      builder.append("Content-Type: text/html; charset=utf-8\n");
+                      builder.append("\n");
+                      builder.append(output);
+                  }
               }
-              //this is for internal use when HTML creates the iframe. Unlikely a user can see it.
+              //this is for internal use when HTML creates the iframe. Users are welcome to access it if they like.
               else if (request.contains("comments.txt")) {
                   File file = new File("www/comments.txt");
                   // Generate response
