@@ -266,13 +266,16 @@ class WebServer {
                   Map<String, String> query_pairs = new LinkedHashMap<String, String>();
                     query_pairs = splitQuery(request.replace("comment?", ""));
                     String _comment_body = query_pairs.get("text");
+                    if (_comment_body == null) throw new IOException();
                     System.out.println(_comment_body);
                     String _author_name = query_pairs.get("author");
+                    if (_author_name == null) throw new IOException();
                     System.out.println(_author_name);
-                    String file = "../../../../../comments.txt";
+                    String file = "www/comments.txt";
                     //error handling is done via exceptions below
-                    BufferedWriter out = new BufferedWriter(new FileWriter(file));
-                    out.write("COMMENT: " + _comment_body + "\n" + "BY: " + _author_name + "\n");
+                    BufferedWriter out = new BufferedWriter(new FileWriter(file, true));
+
+                    out.write("[COMMENT: " + _comment_body + "\nBY: " + _author_name + "]\n");
                     out.close();
                     builder.append("HTTP/1.1 200 OK\n");
                     builder.append("Content-Type: text/html; charset=utf-8\n");
