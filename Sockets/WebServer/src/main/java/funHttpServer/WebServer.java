@@ -196,7 +196,8 @@ class WebServer {
                       builder.append("\n");
                       builder.append("File not found: " + file);
                   }
-              } else if (request.contains("multiply?")) {
+              }
+              else if (request.contains("multiply?")) {
                   // This multiplies two numbers, there is NO error handling, so when
                   // wrong data is given this just crashes
 
@@ -229,7 +230,8 @@ class WebServer {
                       // TODO: Include error handling here with a correct error code and
                       // a response that makes sense
                   }
-              } else if (request.contains("github?")) {
+              }
+              else if (request.contains("github?")) {
                   // pulls the query from the request and runs it with GitHub's REST API
                   // check out https://docs.github.com/rest/reference/
                   //
@@ -258,7 +260,26 @@ class WebServer {
                   builder.append("\n");
                   builder.append(outputTotal).append("\n");
 
-              } else {
+              }
+              else if (request.contains("comment?")) {
+              //TODO: Implement comments here
+                  Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+                    query_pairs = splitQuery(request.replace("comment?", ""));
+                    String _comment_body = query_pairs.get("text");
+                    System.out.println(_comment_body);
+                    String _author_name = query_pairs.get("author");
+                    System.out.println(_author_name);
+                    String file = "comments.txt";
+                    //error handling is done via exceptions below
+                    BufferedWriter out = new BufferedWriter(new FileWriter(file));
+                    out.write("Comment: " + _comment_body + "\n" + "By: " + _author_name + "\n");
+                    out.close();
+                    builder.append("HTTP/1.1 200 OK\n");
+                    builder.append("Content-Type: text/html; charset=utf-8\n");
+                    builder.append("\n");
+                    builder.append("Comment added!");
+              }
+              else {
                   // if the request is not recognized at all
                   builder.append("HTTP/1.1 400 Bad Request\n");
                   builder.append("Content-Type: text/html; charset=utf-8\n");
@@ -279,9 +300,11 @@ class WebServer {
           builder.append("Invalid request to GitHub REST API.");
           response = builder.toString().getBytes();
       } catch (IOException e) {
-          e.printStackTrace();
-          response = ("<html>ERROR: " + e.getMessage() + "</html>").getBytes();
-      }
+          builder.append("HTTP/1.1 400 Bad Request\n");
+          builder.append("Content-Type: text/html; charset=utf-8\n");
+          builder.append("\n");
+          builder.append("Invalid comment or author input. Please retry.");
+          response = builder.toString().getBytes();      }
       return response;
   }
 

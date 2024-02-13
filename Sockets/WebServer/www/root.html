@@ -3,13 +3,29 @@
 		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
 	</head>
 	<body>
-		<h3>You can make the following GET requests<h3>
+		<h3>You can make the following GET requests</h3>
 		<ul>
 			<li>/file/sample.html -- returns the content of the file sample.html</li>
 			<li>/json -- returns a json of the /random request</a></li>
 			<li>/random -- returns index.html</a></li>
+			<li>/multiply -- use to multiply two integer values together.</a></li>
+			<ul>
+				<li>	for example, "/multiply?num1=6&num2=4"</li>
+			</ul>
+			<li>/github -- use to list out all of a user's repos and their associated data.</a></li>
+			<ul>
+				<li>	for example: "/github?query=users/amehlhase316/repos"</li>
+			</ul>
+			<li>/comment -- use to add comments to the list below!</li>
+			<ul>
+				<li>for example: /comment?comment?text=despite all my rage i am just a rat in a cage&author=trenton mosher</li>
+			</ul>
 		</ul>
 		<h3>File Structure in www (you can use /file/www/FILENAME):</h3>
 		${links}
+		<h3>Here are some comments from other users!</h3>
+		<object type="text/plain" data="../comments.txt" width="300" height="600">
+			<p>Cannot load text file, browser does not support file loading. Please use a different browser to see this content.</p>
+		</object>
 	</body>
 </html>
