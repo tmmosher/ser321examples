@@ -293,7 +293,7 @@ class WebServer {
                   }
                   else {
                       String output = "";
-                   for (int i = 0; i < num2; i++) {
+                   for (int i = 0; i <= num2; i++) {
                        output = output + ((int) Math.pow(num1, i)) + " ";
                    }
                       builder.append("HTTP/1.1 200 OK\n");
